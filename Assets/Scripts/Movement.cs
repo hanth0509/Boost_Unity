@@ -6,9 +6,12 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [SerializeField] float mainThrust = 100f;
-    [SerializeField] float rotationThrust =1f;
+    [SerializeField] float rotationThrust = 1f;
+    [SerializeField] AudioClip mainEngine;
     Rigidbody rb;
     AudioSource audioSource;
+
+    bool isAlive;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,20 +25,21 @@ public class Movement : MonoBehaviour
         ProcessThurst();
         ProcessRotation();
     }
-    void ProcessThurst()
+    void ProcessThurst() //phát âm thanh 
     {
         if (Input.GetKey(KeyCode.Space))
         {
             rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
-            if(!audioSource.isPlaying){
-                 audioSource.Play(); 
-            } 
+            if (!audioSource.isPlaying)
+            {
+                audioSource.PlayOneShot(mainEngine);
+            }
         }
         else
         {
             audioSource.Stop();
         }
-       
+
     }
     void ProcessRotation()
     {
@@ -45,14 +49,14 @@ public class Movement : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.D))
         {
-           ApplyRotation( -rotationThrust);
-        } 
+            ApplyRotation(-rotationThrust);
+        }
     }
 
     private void ApplyRotation(float rotationThisFrame) //quay goc bao nhieu tuy chinh
     {
-        rb.freezeRotation= true;//dong bang vong quay de manually rotate
+        rb.freezeRotation = true;//dong bang vong quay de manually rotate
         transform.Rotate(Vector3.forward * rotationThisFrame * Time.deltaTime);
         rb.freezeRotation = false;
     }
-} 
+}
