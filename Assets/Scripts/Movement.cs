@@ -8,10 +8,13 @@ public class Movement : MonoBehaviour
     [SerializeField] float mainThrust = 100f;
     [SerializeField] float rotationThrust = 1f;
     [SerializeField] AudioClip mainEngine;
+    [SerializeField] ParticleSystem mainEngineParticles;
+    [SerializeField] ParticleSystem leftThurterParticles;
+    [SerializeField] ParticleSystem rightThurterParticles;
     Rigidbody rb;
     AudioSource audioSource;
 
-    bool isAlive;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,27 +32,71 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
-            if (!audioSource.isPlaying)
-            {
-                audioSource.PlayOneShot(mainEngine);
-            }
+            StartThrusting();
         }
         else
         {
-            audioSource.Stop();
+            StopThrusting();
         }
+    }
 
+
+    void StartThrusting()
+    {
+        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(mainEngine);
+        }
+        if (!mainEngineParticles.isPlaying)
+        {
+            mainEngineParticles.Play();//phát hiệu ứng
+        }
+    }
+
+    void StopRotating()
+    {
+        rightThurterParticles.Stop();
+        leftThurterParticles.Stop();
+    }
+
+    void RotateRight()
+    {
+        ApplyRotation(-rotationThrust);
+        if (!rightThurterParticles.isPlaying)
+        {
+            rightThurterParticles.Play();//phát hiệu ứng
+        }
+    }
+    void StopThrusting()
+    {
+        audioSource.Stop();
+        mainEngineParticles.Stop();// dung hieu ung
     }
     void ProcessRotation()
     {
         if (Input.GetKey(KeyCode.A))
         {
-            ApplyRotation(rotationThrust);
+            RotateLeft();
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            ApplyRotation(-rotationThrust);
+            RotateRight();
+        }
+        else
+        {
+            StopRotating();
+        }
+    }
+
+
+
+    void RotateLeft()
+    {
+        ApplyRotation(rotationThrust);
+        if (!leftThurterParticles.isPlaying)
+        {
+            leftThurterParticles.Play();//phát hiệu ứng
         }
     }
 
